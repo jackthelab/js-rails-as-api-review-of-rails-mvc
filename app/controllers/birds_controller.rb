@@ -1,7 +1,8 @@
 class BirdsController < ApplicationController
 
     def index
-        @birds = Bird.all
+        birds = Bird.all
+        render json: { birds: birds, messages: ['Hello Birds', 'Goodbye Birds'] }
     end
 
 end
