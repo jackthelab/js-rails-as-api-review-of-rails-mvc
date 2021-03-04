@@ -10,7 +10,13 @@ class BirdsController < ApplicationController
         # render json: birds, only: [:id, :name, :species]
 
         # except: excludes the selected keys
-        render json: birds, except: [:created_at, :updated_at]
+        # render json: birds, except: [:created_at, :updated_at]
+        # render json: birds, include: [:sightings]
+        render json: birds.to_json(:include => {
+            :sightings => {only: [:id]},
+            :locations => {except: [:created_at, :updated_at]}
+        }, except: [:created_at, :updated_at])
+        
 
         # only: & except: are are params to to_json method
         ## fully written out without Rails magic would look somehting like...
@@ -26,7 +32,12 @@ class BirdsController < ApplicationController
         # render json: bird.slice(:id, :name, :species)
 
         if bird
-            render json: bird.slice(:id, :name, :species)
+            # render json: bird.slice(:id, :name, :species)
+            # render json: { id: bird.id, name: bird.name, species: bird.species, sightings: bird.sightings, locations: bird.locations}
+            render json: bird, :include => {
+                :sightings => {except: [:created_at, :updated_at]},
+                :locations => {except: [:created_at, :updated_at]}
+            }, except: [:created_at, :updated_at]
         else
             render json: { message: "Bird not found" }
         end
